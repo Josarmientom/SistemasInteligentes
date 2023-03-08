@@ -12,8 +12,9 @@ def color(arr):
     else:
         return 'R'
 
-#bounding_box = {'top': 200, 'left': 0, 'width': 900, 'height': 800}
-bounding_box = {'top': 202, 'left': 30, 'width': 542, 'height': 480}
+#bounding_box = {'top': 200, 'left': 0, 'width': 900, 'height': 800} # Joseph
+bounding_box = {'top': 202, 'left': 30, 'width': 542, 'height': 480} # Sebastian
+#bounding_box = {'top': 167, 'left': 28, 'width': 544, 'height': 481} # Universidad
 
 while True:
     start = time.time()
