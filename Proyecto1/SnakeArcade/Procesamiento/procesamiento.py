@@ -119,15 +119,15 @@ def print_path(matrix, tree, start, goal):
     # Invertimos el camino
     path.reverse()
     # Para cada posicion en el camino
+    count = 1
+    matrix_out = np.zeros(shape=(15,17))
     for position in path:
-        # Si la posicion no es el nodo inicial
-        if position != start:
-            # Si la posicion no es el nodo objetivo
-            if position != goal:
-                # Agregamos un 1 a la matriz
-                matrix[position[0]][position[1]] = 1
+        # Si la posicion no es el nodo inicial ni el objetivo
+        # if position != start and position != goal:
+        matrix_out[position[0]][position[1]] = count
+        count += 1
     # Retornamos la matriz
-    return matrix
+    return matrix_out
 
 # Para esta prueba supondremos que la cabeza de la serpiente es el mayor numero, o el numero de manzanas capturadas + 4
 matrix = np.zeros(shape=(15,17))
@@ -154,4 +154,5 @@ print("apple ", apple)
 print("tree", tree_a_star(matrix, head, apple))
 print("neighbors ", neighbors(matrix, head))
 print(matrix)
+print("\n\n\n\n")
 print(print_path(matrix, tree_a_star(matrix, head, apple), head, apple))
