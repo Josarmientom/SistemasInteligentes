@@ -3,7 +3,6 @@ Dada una matriz, vamos a obtener el mejor camino para llegar a la manzana
 '''
 import numpy as np
 
-
 def get_path(matrix):
     pass
 

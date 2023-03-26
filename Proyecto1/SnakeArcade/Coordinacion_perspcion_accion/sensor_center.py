@@ -1,3 +1,6 @@
+'''
+Sensor que detecta las casillas centrales de la matriz total, lo que nos ahorra tiempo de procesamiento de imagenes
+'''
 import cv2
 from mss import mss
 import numpy as np
