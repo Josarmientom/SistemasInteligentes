@@ -1,9 +1,11 @@
 '''
 Programa final del agente que juega al snake
 '''
+from time import sleep
 import cv2
 from mss import mss
 import numpy as np
+import pyautogui
 
 #bounding_box = {'top': 200, 'left': 0, 'width': 900, 'height': 800} # Joseph
 bounding_box = {'top': 202, 'left': 30, 'width': 542, 'height': 480} # Sebastian
@@ -25,24 +27,38 @@ class Agent_snake():
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
         # travel the image and find the apple
-        i_div = 480// (15)
-        j_div = 542// (17)
+        i_div = bounding_box['height'] // (15)
+        j_div = bounding_box['width']// (17)
         for i in range(0, 15):
             for j in range(0, 17):
                 tmp = img[i*i_div + i_div//2, j*j_div + j_div//2]
                 if max(tmp) == tmp[0]:
                     # apple found
                     return (i, j)
+        return self.apple
 
-    def actuator(instruct, self) -> None:
-        pass
+    def actuator(self, instruct) -> None:
+        # instruct is a dictionary with the path to the apple
+        current = self.head
+        stack = []
+        while current != self.prev_head:
+            stack.append(self.direction(current, instruct[current]))
+            current = instruct[current]
+        self.prev_head = self.head
 
-    def program(self, perseption) -> dict:
-        # needs the apple positions by perseption, and use the memory to find the best path
-        self.set_apple(perseption)
+        for i in stack:
+            pyautogui.press(i)
+            sleep(0.001)
+
+    def program(self, perception) -> dict:
+        # needs the apple positions by perception, and use the memory to find the best path
+        self.set_apple(perception)
+        print(self.memory)
+        print(self.head)
+        print(self.apple)
+        print(self.score)
         path = self.path(self.memory, self.head, self.apple)
         self.update_memory(path)
-        self.score += 1
         return path
 
     def run(self):
@@ -63,8 +79,22 @@ class Agent_snake():
         self.memory[7][3] = 3
         self.memory[7][4] = 4
         self.head = (7, 4)
+        self.prev_head = (7, 4)
         self.apple = (7, 12)
         self.memory[self.apple] = -1
+
+    def direction(self, node, neighbor) -> str:
+        # node and neighbor are tuples (x, y)
+        if node[0] == neighbor[0]:
+            if node[1] > neighbor[1]:
+                return 'right'
+            else:
+                return 'left'
+        else:
+            if node[0] > neighbor[0]:
+                return 'down'
+            else:
+                return 'up'
     
     def set_apple(self, apple):
         self.apple = apple
@@ -150,6 +180,7 @@ class Agent_snake():
             current = path[current]
     
     def snake_neighbor(self, node, value) -> tuple:
+        # return a node with a menor value than the node given
         if node[0] != 0:
             if 0 < self.memory[node[0] - 1][node[1]] < value:
                 return (node[0] - 1, node[1])
@@ -165,11 +196,6 @@ class Agent_snake():
         return None
 
 if __name__ == '__main__':
+    sleep(2)
     agent = Agent_snake()
-    #agent.run()
-
-    print(agent.memory)
-    path = agent.path(agent.memory, agent.head, agent.apple)
-    agent.update_memory(path)
-    print("\n\n")
-    print(agent.memory)
+    agent.run()
