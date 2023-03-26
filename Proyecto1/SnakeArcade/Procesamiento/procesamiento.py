@@ -129,30 +129,31 @@ def print_path(matrix, tree, start, goal):
     # Retornamos la matriz
     return matrix_out
 
-# Para esta prueba supondremos que la cabeza de la serpiente es el mayor numero, o el numero de manzanas capturadas + 4
-matrix = np.zeros(shape=(15,17))
-matrix[0][4] = 4
-matrix[0][3] = 3
-matrix[0][2] = 2
-matrix[0][1] = 1
+if __name__ == '__main__':
+    # Para esta prueba supondremos que la cabeza de la serpiente es el mayor numero, o el numero de manzanas capturadas + 4
+    matrix = np.zeros(shape=(15,17))
+    matrix[0][4] = 4
+    matrix[0][3] = 3
+    matrix[0][2] = 2
+    matrix[0][1] = 1
 
-# Manzana en la posicion [7, 12] con -1
-matrix[7][12] = -1
+    # Manzana en la posicion [7, 12] con -1
+    matrix[7][12] = -1
 
-# Para obtener la posicion de la cabeza de la serpiente simplemente buscaremos la ubicacion del numero de manzanas capturadas + 4
+    # Para obtener la posicion de la cabeza de la serpiente simplemente buscaremos la ubicacion del numero de manzanas capturadas + 4
 
-# Manzanas = 0, Cabeza = 0 + 4
-head = np_where(matrix, 4)
-# La posicion de la manzana es la ubicacion del numero -1
-apple = np_where(matrix, -1)
+    # Manzanas = 0, Cabeza = 0 + 4
+    head = np_where(matrix, 4)
+    # La posicion de la manzana es la ubicacion del numero -1
+    apple = np_where(matrix, -1)
 
-# Aplicaremos A* desde head hasta apple usando la heuristica de Manhattan y para obtener los nodos usaremos la restriccion de paredes
+    # Aplicaremos A* desde head hasta apple usando la heuristica de Manhattan y para obtener los nodos usaremos la restriccion de paredes
 
 
-print("head ", head)
-print("apple ", apple)
-print("tree", tree_a_star(matrix, head, apple))
-print("neighbors ", neighbors(matrix, head))
-print(matrix)
-print("\n\n\n\n")
-print(print_path(matrix, tree_a_star(matrix, head, apple), head, apple))
+    print("head ", head)
+    print("apple ", apple)
+    print("tree", tree_a_star(matrix, head, apple))
+    print("neighbors ", neighbors(matrix, head))
+    print(matrix)
+    print("\n\n\n\n")
+    print(print_path(matrix, tree_a_star(matrix, head, apple), head, apple))

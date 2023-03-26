@@ -22,18 +22,24 @@ while True:
         img = np.array(sct.grab(bounding_box))
 
     #img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    img_pil = Image.fromarray(img)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    _, th = cv2.threshold(img, 127, 255, cv2.THRESH_BINARY)
 
-    imgSmall = img_pil.resize((17,15), resample=Image.BILINEAR)
+    contours1, hierarchy1 = cv2.findContours(th, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    contours2, hierarchy2 = cv2.findContours(th, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
 
-    result = imgSmall.resize(img_pil.size)
+    cv2.drawContours(img, contours1, -1, (0,255,0), 3)
+    #img_pil = Image.fromarray(img)
 
-    result = cv2.cvtColor(np.array(result), cv2.COLOR_RGB2BGR)
+    #imgSmall = img_pil.resize((17,15), resample=Image.BILINEAR)
+
+    #result = imgSmall.resize(img_pil.size, Image.NEAREST)
+
+    #result = cv2.cvtColor(np.array(result), cv2.COLOR_RGB2BGR)
     #result = cv2.cvtColor(np.array(imgSmall), cv2.COLOR_RGB2BGR)
 
 
-    cv2.imshow('screen', result)
+    cv2.imshow('screen', img)
 
     if (cv2.waitKey(1) & 0xFF) == ord('q'):
         cv2.destroyAllWindows()
