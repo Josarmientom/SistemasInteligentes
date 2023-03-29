@@ -49,6 +49,7 @@ class Agent_snake():
         for i in stack[::-1]:
             pyautogui.press(i)
             sleep(0.001)
+        self.score += 1
 
     def program(self, perception) -> dict:
         # needs the apple positions by perception, and use the memory to find the best path
@@ -58,6 +59,8 @@ class Agent_snake():
         print(self.apple)
         print(self.score)
         path = self.path(self.memory, self.head, self.apple)
+        if path is None:
+            print('*'*100,'\nNo hay camino\n', '*'*100)
         self.update_memory(path)
         return path
 
@@ -107,19 +110,19 @@ class Agent_snake():
         # a & b are tuples (x, y) of two points
         return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
-    def neighbors(self, matrix, node) -> list:
+    def neighbors(self, matrix, node, g_score) -> list:
         neighbors = []
         if node[0] != 0:
-            if matrix[node[0] - 1][node[1]] <= 0:
+            if matrix[node[0] - 1][node[1]] - g_score - 1 <= 0:
                 neighbors.append((node[0] - 1, node[1]))
         if node[0] != 14:
-            if matrix[node[0] + 1][node[1]] <= 0:
+            if matrix[node[0] + 1][node[1]] - g_score - 1 <= 0:
                 neighbors.append((node[0] + 1, node[1]))
         if node[1] != 0:
-            if matrix[node[0]][node[1] - 1] <= 0:
+            if matrix[node[0]][node[1] - 1] - g_score - 1 <= 0:
                 neighbors.append((node[0], node[1] - 1))
         if node[1] != 16:
-            if matrix[node[0]][node[1] + 1] <= 0:
+            if matrix[node[0]][node[1] + 1] - g_score - 1 <= 0:
                 neighbors.append((node[0], node[1] + 1))
         return neighbors
 
@@ -138,7 +141,7 @@ class Agent_snake():
                 return tree
             closed_set.add(current)
             open_set.remove(current)
-            for neighbor in self.neighbors(matrix, current):
+            for neighbor in self.neighbors(matrix, current, g_score[current]):
                 if neighbor in closed_set:
                     continue
                 tentative_g_score = g_score[current] + 1
@@ -157,27 +160,37 @@ class Agent_snake():
         # add snake nodes to the path
         node_tmp = self.head
         value = self.score + 4
+        snake = dict()
         while True:
             new_node = self.snake_neighbor(node_tmp, value)
             if new_node:
-                path[node_tmp] = new_node
+                snake[node_tmp] = new_node
                 value -= 1
+                self.memory[node_tmp] = 0
                 node_tmp = new_node
             else:
+                self.memory[node_tmp] = 0
                 tail = node_tmp
                 break
 
         # update the memory and the head
-        self.head = self.apple
-        current = self.head
+
+        current = self.apple
         value = self.score + 5
-        while True:
+        while current != self.head:
             self.memory[current] = value
             if value != 0:
                 value -= 1
-            if current == tail:
-                break
             current = path[current]
+        
+        while current != tail:
+            self.memory[current] = value
+            if value != 0:
+                value -= 1
+            else:
+                break
+            current = snake[current]
+        self.head = self.apple
     
     def snake_neighbor(self, node, value) -> tuple:
         # return a node with a menor value than the node given
