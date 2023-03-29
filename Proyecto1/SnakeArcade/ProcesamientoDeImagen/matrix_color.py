@@ -14,7 +14,7 @@ def color(arr):
 
 #bounding_box = {'top': 200, 'left': 0, 'width': 900, 'height': 800} # Joseph
 bounding_box = {'top': 202, 'left': 30, 'width': 542, 'height': 480} # Sebastian
-#bounding_box = {'top': 167, 'left': 28, 'width': 544, 'height': 481} # Universidad
+#bounding_box = {'top': 167, 'left': 28, 'width': 544, 'height': 481} # universidad
 
 while True:
     start = time.time()
@@ -27,7 +27,7 @@ while True:
 
     imgSmall = img_pil.resize((17,15), resample=Image.BILINEAR)
 
-    result = imgSmall.resize(img_pil.size)
+    result = imgSmall.resize(img_pil.size, Image.NEAREST)
 
     result = cv2.cvtColor(np.array(result), cv2.COLOR_RGB2BGR)
     #result = cv2.cvtColor(np.array(imgSmall), cv2.COLOR_RGB2BGR)
@@ -41,6 +41,7 @@ while True:
 
     end = time.time()
     print(end - start)
+    print(len())
     #for i in range(result.shape[0]):
         #for j in range(result.shape[1]):
             #print(color(result[i,j]), end=' ')
