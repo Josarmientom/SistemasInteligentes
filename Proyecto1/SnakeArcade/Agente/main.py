@@ -46,7 +46,7 @@ class Agent_snake():
             current = instruct[current]
         self.prev_head = self.head
 
-        for i in stack:
+        for i in stack[::-1]:
             pyautogui.press(i)
             sleep(0.001)
 
