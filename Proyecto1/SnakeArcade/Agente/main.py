@@ -182,16 +182,16 @@ class Agent_snake():
     def snake_neighbor(self, node, value) -> tuple:
         # return a node with a menor value than the node given
         if node[0] != 0:
-            if 0 < self.memory[node[0] - 1][node[1]] < value:
+            if 0 < self.memory[node[0] - 1][node[1]] == value - 1:
                 return (node[0] - 1, node[1])
         if node[0] != 14:
-            if 0 < self.memory[node[0] + 1][node[1]] < value:
+            if 0 < self.memory[node[0] + 1][node[1]] == value - 1:
                 return (node[0] + 1, node[1])
         if node[1] != 0:
-            if 0 < self.memory[node[0]][node[1] - 1] < value:
+            if 0 < self.memory[node[0]][node[1] - 1] == value - 1:
                 return (node[0], node[1] - 1)
         if node[1] != 16:
-            if 0 < self.memory[node[0]][node[1] + 1] < value:
+            if 0 < self.memory[node[0]][node[1] + 1] == value - 1:
                 return (node[0], node[1] + 1)
         return None
 
