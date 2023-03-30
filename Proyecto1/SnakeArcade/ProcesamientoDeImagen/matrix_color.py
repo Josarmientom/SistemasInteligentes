@@ -41,7 +41,6 @@ while True:
 
     end = time.time()
     print(end - start)
-    print(len())
     #for i in range(result.shape[0]):
         #for j in range(result.shape[1]):
             #print(color(result[i,j]), end=' ')

@@ -6,6 +6,7 @@ import cv2
 from mss import mss
 import numpy as np
 import pyautogui
+from PIL import Image
 
 #bounding_box = {'top': 200, 'left': 0, 'width': 900, 'height': 800} # Joseph
 bounding_box = {'top': 202, 'left': 30, 'width': 542, 'height': 480} # Sebastian
@@ -20,22 +21,30 @@ class Agent_snake():
         '''
         Sensor obtains only the apple position
         '''
-         # take screenshot with mss
-        with mss() as sct:
-            img = np.array(sct.grab(bounding_box)) 
-        # obtain the matrix of the image
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        # If is the first time, return the default apple position
+        if self.start:
+            self.start = False
+            return (7, 12)
+        
+        # While cicle wait until an apple appears in the game
+        while True:
+            with mss() as sct:
+                img = np.array(sct.grab(bounding_box))
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            img_pil = Image.fromarray(img)
 
-        # travel the image and find the apple
-        i_div = bounding_box['height'] // (15)
-        j_div = bounding_box['width']// (17)
-        for i in range(0, 15):
-            for j in range(0, 17):
-                tmp = img[i*i_div + i_div//2, j*j_div + j_div//2]
-                if max(tmp) == tmp[0]:
-                    # apple found
-                    return (i, j)
-        return self.apple
+            imgSmall = img_pil.resize((17,15), resample=Image.BILINEAR)
+            img = cv2.cvtColor(np.array(imgSmall), cv2.COLOR_RGB2BGR)
+
+            matrix = np.zeros(shape=(15,17))
+
+            for i in range(0, 15):
+                for j in range(0, 17):
+                    tmp = img[i, j]
+                    if max(tmp) == tmp[2]:
+                        self.apple = (i, j)
+                        matrix[i][j] = 2
+                        return (i, j)
 
     def actuator(self, instruct) -> None:
         # instruct is a dictionary with the path to the apple
@@ -48,7 +57,7 @@ class Agent_snake():
 
         for i in stack[::-1]:
             pyautogui.press(i)
-            sleep(0.001)
+            sleep(0.018)
         self.score += 1
 
     def program(self, perception) -> dict:
@@ -69,8 +78,26 @@ class Agent_snake():
             perseption = self.sensor()
             path = self.program(perseption)
             self.actuator(path)
+            # This funtion wait until the apple change of position
+            while(self.apple_in_position()):
+                pass
 
     # Auxiliar methods
+
+    # Temporal method for testing
+    def apple_in_position(self):
+        with mss() as sct:
+            img = np.array(sct.grab(bounding_box))
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        img_pil = Image.fromarray(img)
+
+        imgSmall = img_pil.resize((17,15), resample=Image.BILINEAR)
+        result = cv2.cvtColor(np.array(imgSmall), cv2.COLOR_RGB2BGR)
+        val = result[self.apple] 
+        if max(val) == val[2]:
+            return True
+        else:
+            return False
 
     def initial_state(self):
         # initial state of the snake
