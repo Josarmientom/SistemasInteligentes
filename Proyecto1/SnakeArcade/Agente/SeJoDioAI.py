@@ -71,11 +71,11 @@ class Agent_snake():
             path = self.path(self.memory, self.head, tail)
             count += 1
         appleNeighbors = self.neighbors(self.memory, self.apple, 1)
-        while True:
-            n = random.randint(0,len(appleNeighbors)-1)
-            if appleNeighbors[n] not in path:
+        for node in appleNeighbors:
+            #n = random.randint(0,len(appleNeighbors)-1)
+            if node not in path:
                 self.helpapple = self.apple
-                self.set_apple(appleNeighbors[n])
+                self.set_apple(node)
                 path[self.apple] = self.helpapple
                 break
         self.update_memory(path)
